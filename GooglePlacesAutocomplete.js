@@ -211,6 +211,10 @@ const GooglePlacesAutocomplete = React.createClass({
     return [...res, ...results];
   },
 
+  componentWillUpdate(nextProps, nextState) {
+    this.props.onResultsRender(nextState.dataSource);
+  },
+
   componentWillMount() {
     this._request = this.props.debounce
       ? debounce(this._request, this.props.debounce)
@@ -242,6 +246,10 @@ const GooglePlacesAutocomplete = React.createClass({
    */
   triggerFocus() {
     if (this.refs.textInput) this.refs.textInput.focus();
+  },
+
+  triggerClear() {
+    this._handleChangeText('');
   },
 
   /**
@@ -733,6 +741,7 @@ const GooglePlacesAutocomplete = React.createClass({
       <View
         style={[defaultStyles.container, this.props.styles.container]}
       >
+        {this.props.topElement}
         <View
           style={[defaultStyles.textInputContainer, this.props.styles.textInputContainer]}
         >
@@ -747,7 +756,7 @@ const GooglePlacesAutocomplete = React.createClass({
             placeholder={this.props.placeholder}
             placeholderTextColor={this.props.placeholderTextColor}
             onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
-            clearButtonMode="while-editing"
+            clearButtonMode="never"
             underlineColorAndroid={this.props.underlineColorAndroid}
           />
           {this._renderRightButton()}
